@@ -1,331 +1,147 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Calculadora Exótica — Sebas</title>
-
-  <!-- Google font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Futurista</title>
   <style>
-    :root{
-      --bg1: #07071a;
-      --bg2: #0f1530;
-      --neon1: #00f5ff;
-      --neon2: #ff2fff;
-      --accent: #66ffb3;
-      --glass: rgba(255,255,255,0.04);
-      --glass-strong: rgba(255,255,255,0.06);
+    /* ===== Estilos generales ===== */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: radial-gradient(circle at center, #0f0f0f, #000);
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    /* Page */
-    html,body{height:100%;}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family: 'Poppins', system-ui, sans-serif;
-      background: radial-gradient(1200px 600px at 10% 10%, #081022 0%, #0b0b1a 10%, var(--bg1) 40%, var(--bg2) 100%);
-      color:#eafcff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow:hidden;
-    }
-
-    /* Floating blobs for drama */
-    .blob{
-      position:fixed;
-      filter: blur(60px) saturate(140%);
-      opacity:0.18;
-      pointer-events:none;
-      mix-blend-mode:screen;
-    }
-    .blob.b1{width:520px;height:520px;left:-120px;top:-100px;background:linear-gradient(45deg,var(--neon1),#66ffd0);}
-    .blob.b2{width:420px;height:420px;right:-80px;bottom:-60px;background:linear-gradient(45deg,var(--neon2),#ff9aff);opacity:0.12}
-
-    /* Calc wrapper */
-    .wrap {
-      width: min(460px, 92vw);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 22px;
+    .calculator {
+      background: rgba(15, 15, 15, 0.95);
+      padding: 20px;
       border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0,245,255,0.03);
-      backdrop-filter: blur(8px) saturate(120%);
-      position: relative;
-      z-index: 2;
-      transform: translateY(0);
-      transition: transform .4s ease;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+      text-align: center;
+      width: 320px;
     }
 
-    .wrap:hover{ transform: translateY(-6px); }
+    .calculator h2 {
+      color: cyan;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px cyan;
+    }
 
-    .header {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:14px;
-    }
-    .logo {
-      width:62px;height:62px;border-radius:14px;
-      background: linear-gradient(135deg,var(--neon1),var(--neon2));
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Orbitron', sans-serif;color:#021014;font-weight:700;
-      font-size:20px;box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-    }
-    .title{
-      font-size:18px;font-weight:700;color:var(--neon1);
-      text-shadow: 0 0 8px rgba(0,245,255,0.15);
-      line-height:1;
-    }
-    .subtitle{font-size:12px;color:#bfeff3; opacity:.85;margin-top:3px}
-
-    /* Display */
     .display {
-      margin-top:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
-      border-radius:12px;
-      padding:14px 16px;
-      border: 1px solid var(--glass-strong);
-      text-align:right;
-      font-family: 'Orbitron', monospace;
-      color:#e9ffff;
-      font-size:28px;
-      min-height:54px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-end;
-      box-shadow: inset 0 -6px 20px rgba(0,0,0,0.25);
-    }
-    .display .small{
-      position:absolute; left:22px; top:18px; color:#aef0ff; font-size:12px; opacity:.7;
-    }
-
-    /* keypad */
-    .keys{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: repeat(4,1fr);
-      gap:12px;
-    }
-    button.key{
+      width: 100%;
+      height: 60px;
+      background: #111;
       border: none;
-      border-radius:12px;
-      padding:14px;
-      font-size:18px;
-      font-weight:700;
-      cursor:pointer;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      color:#eafcff;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-      transition: transform .12s ease, box-shadow .12s ease;
-      position:relative;
-      overflow:hidden;
-    }
-    button.key:active{ transform: translateY(2px) scale(.995) }
-
-    /* operator special look */
-    .op { background: linear-gradient(90deg,var(--neon2),var(--neon1)); color:#021014; box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 18px rgba(255,0,255,0.12); }
-    .fn { background: linear-gradient(90deg,#ffffff10,#ffffff06); color:#dff; border:1px solid rgba(255,255,255,0.04); }
-
-    /* big equals */
-    .equals { grid-column: 4 / 5; grid-row: 3 / 6; border-radius:12px; height: calc(100% - 24px); display:flex; align-items:center; justify-content:center; font-size:22px; }
-
-    /* small keys */
-    .smallk { font-size:15px; padding:10px; }
-
-    /* responsive tweaks */
-    @media (max-width:420px){
-      .display{font-size:22px; min-height:46px;}
-      .logo{width:52px;height:52px;font-size:18px}
-      .wrap{padding:16px}
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-align: right;
+      padding: 10px;
+      color: #0ff;
+      box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5);
     }
 
-    /* glow pulse on operators */
-    .op::after{
-      content:"";
-      position:absolute; inset:0;
-      filter: blur(14px);
-      opacity:0.22;
-      pointer-events:none;
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
 
-    /* focus outline for keyboard users */
-    button.key:focus{ outline: 2px solid rgba(0,255,170,0.14); outline-offset:2px; }
+    button {
+      padding: 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 12px;
+      background: #111;
+      color: #0ff;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    }
+
+    button:hover {
+      background: #0ff;
+      color: #111;
+      box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+      transform: scale(1.05);
+    }
+
+    .span-two {
+      grid-column: span 2;
+    }
   </style>
 </head>
 <body>
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
+  <div class="calculator">
+    <h2>Calculadora Futurista</h2>
+    <input type="text" class="display" id="display" disabled>
+    <div class="buttons">
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="deleteLast()">⌫</button>
+      <button onclick="append('%')">%</button>
+      <button onclick="append('/')">÷</button>
 
-  <main class="wrap" role="application" aria-label="Calculadora exótica">
-    <header class="header">
-      <div class="logo" aria-hidden="true">Σ</div>
-      <div>
-        <div class="title">Calculadora Exótica</div>
-        <div class="subtitle">Precisa · Rápida · Con estilo</div>
-      </div>
-    </header>
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('*')">×</button>
 
-    <div class="display" id="display" aria-live="polite">
-      <div class="small" id="history">0</div>
-      <div id="value">0</div>
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('-')">−</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('+')">+</button>
+
+      <button onclick="append('0')" class="span-two">0</button>
+      <button onclick="append('.')">.</button>
+      <button onclick="calculate()">=</button>
     </div>
-
-    <div class="keys" id="keys" role="group" aria-label="Teclado de la calculadora">
-      <button class="key fn smallk" data-action="clear" title="Limpiar (C)">C</button>
-      <button class="key fn" data-action="percent" title="Porcentaje (%)">%</button>
-      <button class="key fn" data-action="back" title="Borrar (⌫)">⌫</button>
-      <button class="key op" data-value="/" title="División">÷</button>
-
-      <button class="key" data-value="7">7</button>
-      <button class="key" data-value="8">8</button>
-      <button class="key" data-value="9">9</button>
-      <button class="key op" data-value="*" title="Multiplicación">×</button>
-
-      <button class="key" data-value="4">4</button>
-      <button class="key" data-value="5">5</button>
-      <button class="key" data-value="6">6</button>
-      <button class="key op" data-value="-" title="Resta">−</button>
-
-      <button class="key" data-value="1">1</button>
-      <button class="key" data-value="2">2</button>
-      <button class="key" data-value="3">3</button>
-      <button class="key op equals" data-action="equals" title="Igual">=</button>
-
-      <button class="key smallk" data-value="0" style="grid-column:1/3">0</button>
-      <button class="key" data-value=".">.</button>
-      <button class="key op" data-value="+" title="Suma">+</button>
-    </div>
-  </main>
-
-  <!-- particles (fancy background) - optional CDN, does not affect calculator logic -->
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script>
-    /* small particles effect behind (low perf) */
-    try{
-      particlesJS("particles-js", {
-        "particles": { "number":{ "value":40,"density":{"enable":true,"value_area":800}},
-          "color":{"value":["#00f5ff","#ff00ff","#66ffb3"]},
-          "shape":{"type":"circle"},
-          "opacity":{"value":0.6,"random":true},
-          "size":{"value":3,"random":true},
-          "line_linked":{"enable":true,"distance":160,"color":"#00f5ff","opacity":0.08,"width":1},
-          "move":{"enable":true,"speed":1.2}
-        },
-        "interactivity":{"events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"}},"modes":{"repulse":{"distance":100},"push":{"particles_nb":4}}},
-        "retina_detect":true
-      });
-    }catch(e){ /* particles script may fail if blocked - safe to ignore */ }
-  </script>
+  </div>
 
   <script>
-    // Calculadora: manejo seguro de la expresión y UX
-    (function(){
-      const display = document.getElementById('value');
-      const history = document.getElementById('history');
-      const keys = document.getElementById('keys');
+    const display = document.getElementById("display");
 
-      let expr = '';   // expresión actual en texto
-      let lastResult = null;
+    function append(value) {
+      display.value += value;
+    }
 
-      function updateScreen(){
-        display.textContent = expr === '' ? '0' : expr;
-        history.textContent = lastResult === null ? ' ' : String(lastResult);
+    function clearDisplay() {
+      display.value = "";
+    }
+
+    function deleteLast() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function calculate() {
+      try {
+        display.value = eval(display.value.replace(/÷/g, "/").replace(/×/g, "*"));
+      } catch {
+        display.value = "Error";
       }
+    }
 
-      // permite solo caracteres seguros
-      function isSafeExpression(s){
-        // solo números, espacios, paréntesis y operadores +-*/.% 
-        return /^[0-9+\-/().% \s]$/.test(s);
+    // Soporte para teclado
+    document.addEventListener("keydown", (event) => {
+      const key = event.key;
+      if (!isNaN(key) || ["+", "-", "*", "/", "."].includes(key)) {
+        append(key);
+      } else if (key === "Enter") {
+        calculate();
+      } else if (key === "Backspace") {
+        deleteLast();
+      } else if (key === "Escape") {
+        clearDisplay();
       }
-
-      function sanitizeAndEval(s){
-        // reemplaza ÷×− por / * - si vienen
-        s = s.replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g,'-').trim();
-        if(!isSafeExpression(s) || s.length > 300) throw new Error('Invalid expression');
-        // manejar porcentajes: convertir '50%' a '(50/100)'
-        s = s.replace(/([0-9.]+)\s*%/g, '($1/100)');
-        // evitar doble punto por accidente (simple check)
-        if(/\.{2,}/.test(s)) throw new Error('Invalid number');
-        // Final safety: evaluar con Function (más seguro que eval en este contexto con validación previa)
-        return Function('"use strict"; return (' + s + ')')();
-      }
-
-      // handlers
-      keys.addEventListener('click', e => {
-        const btn = e.target.closest('button');
-        if(!btn) return;
-        const val = btn.getAttribute('data-value');
-        const action = btn.getAttribute('data-action');
-
-        if(action === 'clear'){
-          expr = '';
-          lastResult = null;
-          updateScreen();
-          return;
-        }
-        if(action === 'back'){
-          expr = expr.slice(0, -1);
-          updateScreen();
-          return;
-        }
-        if(action === 'percent'){
-          // append percent sign to be handled by sanitizer
-          expr += '%';
-          updateScreen();
-          return;
-        }
-        if(action === 'equals'){
-          if(expr.trim() === '') return;
-          try{
-            const res = sanitizeAndEval(expr);
-            lastResult = (Math.round((res + Number.EPSILON) * 1e12) / 1e12); // redondeo limpio
-            expr = String(lastResult);
-            updateScreen();
-          }catch(err){
-            display.textContent = 'Error';
-            setTimeout(()=>{ expr = ''; updateScreen(); }, 1100);
-          }
-          return;
-        }
-        // number or operator
-        if(val){
-          // evitar inicio con operador (excepto negative)
-          if(expr === '' && /[+\/*]/.test(val)) return;
-          expr += val;
-          updateScreen();
-        }
-      });
-
-      // keyboard support
-      document.addEventListener('keydown', e => {
-        if(e.ctrlKey || e.metaKey) return;
-        const key = e.key;
-        if((/^[0-9]$/.test(key)) || key === '.' ){
-          expr += key; updateScreen(); return;
-        }
-        if(key === 'Backspace'){ expr = expr.slice(0,-1); updateScreen(); return; }
-        if(key === 'Enter' || key === '='){ // evaluate
-          try{
-            const res = sanitizeAndEval(expr);
-            lastResult = (Math.round((res + Number.EPSILON) * 1e12) / 1e12);
-            expr = String(lastResult);
-            updateScreen();
-          }catch(_){ display.textContent='Error'; setTimeout(()=>{ expr=''; updateScreen(); },1000); }
-          return;
-        }
-        if(key === 'Escape'){ expr=''; lastResult=null; updateScreen(); return; }
-        if(key === '%'){ expr += '%'; updateScreen(); return; }
-        if(['+','-','*','/','(',')'].includes(key)){ expr += key; updateScreen(); return; }
-      });
-
-      // init
-      updateScreen();
-    })();
+    });
   </script>
 </body>
 </html>
